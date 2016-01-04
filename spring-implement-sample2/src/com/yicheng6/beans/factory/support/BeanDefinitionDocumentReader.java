@@ -113,7 +113,7 @@ public class BeanDefinitionDocumentReader {
         if (hasValueAttribute) {
             String value = element.getAttribute(VALUE_ATTRIBUTE);
             if (value != null && !value.trim().equals("")) {
-                valueHolder.setRefName(value);
+                valueHolder.setValue(value);
             }
         }
 

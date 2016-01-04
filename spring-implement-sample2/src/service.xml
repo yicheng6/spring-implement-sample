@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+  <bean id="userService" class="com.yicheng6.test.UserService">
+  	<constructor-arg name="user" ref="user"/>
+  	<constructor-arg name="words" value="Hi, continue!"/>
+  </bean>
+
+  <bean id="user" class="com.yicheng6.test.User">
+  </bean>
+</beans>
