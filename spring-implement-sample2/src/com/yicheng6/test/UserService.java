@@ -9,6 +9,9 @@ public class UserService {
 
     private String words;
 
+    public UserService() {
+    }
+
     public UserService(User user, String words) {
         this.user = user;
         this.words = words;
@@ -18,8 +21,20 @@ public class UserService {
         return user.getName();
     }
 
-    private String getWords() {
+    public User getUser() {
+        return user;
+    }
+
+    public String getWords() {
         return words;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setWords(String words) {
+        this.words = words;
     }
 
     public void say() {

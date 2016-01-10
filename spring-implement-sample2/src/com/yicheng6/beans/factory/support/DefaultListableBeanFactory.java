@@ -1,7 +1,10 @@
 package com.yicheng6.beans.factory.support;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +53,7 @@ public class DefaultListableBeanFactory {
                 GenericBeanDefinition bd = this.beanDefinitionMap.get(name);
                 Object className = bd.getBeanClass();
                 List<ValueHolder> argumentValues = bd.getConstructorArgumentValues();
+                List<ValueHolder> propertyValues = bd.getPropertyValues();
                 if (className instanceof String) {
                     Class<?> clazz = null;
                     try {
@@ -62,6 +66,11 @@ public class DefaultListableBeanFactory {
                             singletonObject = instantiate(clazz, name);
                         }
                         this.singletonObjects.put(name, (singletonObject != null ? singletonObject : null));
+
+                        // 判断是否setter injection
+                        if (propertyValues.size() > 0) {
+                            applyPropertyValues(singletonObject, propertyValues);
+                        }
                     } catch (ClassNotFoundException e) {
                         throw new Exception("",e);
                     }
@@ -134,6 +143,29 @@ public class DefaultListableBeanFactory {
             return constructor.newInstance();
         } catch (NoSuchMethodException e) {
             throw new Exception(clazz + "No default constructor found", e);
+        }
+    }
+
+    public void applyPropertyValues(Object singletonObject, List<ValueHolder> propertyValues) throws Exception {
+        for (ValueHolder propertyValue : propertyValues) {
+            try {
+                PropertyDescriptor pd = new PropertyDescriptor(propertyValue.getNameAttr(), singletonObject.getClass());
+                Method setter = pd.getWriteMethod();
+                Object param = null;
+                if (propertyValue.getRefName() != null && !propertyValue.getRefName().equals("")) {
+                    try {
+                        param = getBean(propertyValue.getRefName());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (propertyValue.getValue() != null && !propertyValue.getValue().equals("")) {
+                    // 暂时仅处理String
+                    param = propertyValue.getValue();
+                }
+                setter.invoke(singletonObject, new Object[] { param });
+            } catch (IntrospectionException e) {
+                throw new Exception(singletonObject.getClass() + "+IntrospectionException:" + propertyValue.getNameAttr(), e);
+            }
         }
     }
 

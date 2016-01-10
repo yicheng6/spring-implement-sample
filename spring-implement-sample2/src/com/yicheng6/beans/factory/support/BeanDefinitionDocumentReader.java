@@ -24,6 +24,8 @@ public class BeanDefinitionDocumentReader {
 
     public static final String CONSTRUCTOR_ARG_ELEMENT = "constructor-arg";
 
+    public static final String PROPERTY_ELEMENT = "property";
+
     private DefaultListableBeanFactory beanFactory;
 
     public void registerBeanDefinitions(Document document, DefaultListableBeanFactory beanFactory) {
@@ -77,6 +79,7 @@ public class BeanDefinitionDocumentReader {
         bd.setBeanClass(className);
 
         parseConstructorArgElements(element, bd);
+        parsePropertyElements(element, bd);
 
         return bd;
     }
@@ -86,7 +89,7 @@ public class BeanDefinitionDocumentReader {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             if (nodeNameEquals(node, CONSTRUCTOR_ARG_ELEMENT)) {
-                parseConstructorArgElement((Element)node, bd);
+                parseConstructorArgElement((Element) node, bd);
             }
         }
     }
@@ -118,6 +121,45 @@ public class BeanDefinitionDocumentReader {
         }
 
         bd.getConstructorArgumentValues().add(valueHolder);
+    }
+
+    public void parsePropertyElements(Element beanElement, GenericBeanDefinition bd) {
+        NodeList nodeList = beanElement.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node node = nodeList.item(i);
+            if (nodeNameEquals(node, PROPERTY_ELEMENT)) {
+                parsePropertyElement((Element) node, bd);
+            }
+        }
+    }
+
+    public void parsePropertyElement(Element element, GenericBeanDefinition bd) {
+        String nameAttr = element.getAttribute(NAME_ATTRIBUTE);
+
+        boolean hasRefAttribute = element.hasAttribute(REF_ATTRIBUTE);
+        boolean hasValueAttribute = element.hasAttribute(VALUE_ATTRIBUTE);
+        if (hasRefAttribute && hasValueAttribute) {
+            System.err.print("Not allowed to contain either 'ref' attribute OR 'value' attribute");
+        }
+
+        ValueHolder valueHolder = new ValueHolder();
+        if (nameAttr != null && !nameAttr.trim().equals("")) {
+            valueHolder.setNameAttr(nameAttr);
+        }
+        if (hasRefAttribute) {
+            String refName = element.getAttribute(REF_ATTRIBUTE);
+            if (refName != null && !refName.trim().equals("")) {
+                valueHolder.setRefName(refName);
+            }
+        }
+        if (hasValueAttribute) {
+            String value = element.getAttribute(VALUE_ATTRIBUTE);
+            if (value != null && !value.trim().equals("")) {
+                valueHolder.setValue(value);
+            }
+        }
+
+        bd.getPropertyValues().add(valueHolder);
     }
 
     // reader utils

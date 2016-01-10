@@ -11,6 +11,8 @@ public class Test {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("service.xml");
         UserService userService = context.getBean("userService", UserService.class);
         userService.say();
+        userService = context.getBean("userService2", UserService.class);
+        userService.say();
     }
 
 }

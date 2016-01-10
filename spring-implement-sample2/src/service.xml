@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
+  <!-- constructor injection using the neater ref attribute -->
   <bean id="userService" class="com.yicheng6.test.UserService">
-  	<constructor-arg name="user" ref="user"/>
-  	<constructor-arg name="words" value="Hi, continue!"/>
+    <constructor-arg name="user" ref="user"/>
+    <constructor-arg name="words" value="Hi, this is constructor injection, continue!"/>
+  </bean>
+
+  <!-- setter injection using the neater ref attribute -->
+  <bean id="userService2" class="com.yicheng6.test.UserService">
+    <property name="user" ref="user"/>
+    <property name="words" value="Hi, this is setter injection, continue!"/>
   </bean>
 
   <bean id="user" class="com.yicheng6.test.User">

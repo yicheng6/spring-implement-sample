@@ -13,6 +13,8 @@ public class GenericBeanDefinition {
 
     private LinkedList<ValueHolder> constructorArgumentValues = new LinkedList<ValueHolder>();
 
+    private LinkedList<ValueHolder> propertyValues = new LinkedList<ValueHolder>();
+
     public void setBeanName(String beanName) { this.beanName = beanName; }
 
     public String getBeanName() { return this.beanName; }
@@ -28,4 +30,6 @@ public class GenericBeanDefinition {
     public Object getBeanClass() { return this.beanClass; }
 
     public LinkedList<ValueHolder> getConstructorArgumentValues() { return this.constructorArgumentValues; }
+
+    public LinkedList<ValueHolder> getPropertyValues() { return this.propertyValues; }
 }
