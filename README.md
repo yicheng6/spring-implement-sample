@@ -4,3 +4,4 @@
  * Implement to get a basic bean.  
 * spring-implement-sample2  
  * Implement to get a basic bean with the constructor DI (Class & String type).  
+ * Implement of the setter DI (Class & String type).  
